@@ -39,5 +39,9 @@
   },
   "scripts": {
     "test": "grunt test"
+  },
+  "dependencies": {
+    "express": "^4.13.3",
+    "lodash": "^4.0.0"
   }
 }
