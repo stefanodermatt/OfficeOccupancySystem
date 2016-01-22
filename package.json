@@ -38,8 +38,7 @@
     "node": ">=0.10.0"
   },
   "scripts": {
-    "test": "grunt test",
-    "postinstall": "grunt dist"
+    "test": "grunt test"
   },
   "dependencies": {
     "ejs": "^2.3.4",
