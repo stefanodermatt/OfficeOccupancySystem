@@ -4,7 +4,7 @@
     angular
         .module('app.home', [
             'ui.router',
-            'app.example'
+            'app.example',
+            'app.core'
         ]);
-
 })();

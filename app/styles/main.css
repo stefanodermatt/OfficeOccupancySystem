@@ -1,17 +1,4 @@
-
-/*~~~~~~~~~~~~   COLOR   ~~~~~~~~~~~~~~~~~~*/
-
-
-/*~~~~~~~~~~~~   TYPOGRAPHY   ~~~~~~~~~~~~~~~~~~*/
-
-
-/*~~~~~~~~~~~~   BUTTONS   ~~~~~~~~~~~~~~~~~~*/
-
-
-
-/*~~~~~~~~~~~~   OVERWRITE BOOTSTRAP STYLES   ~~~~~~~~~~~~~~~~~~*/
-
-
-
-/*~~~~~~~~~~~~   SMALL DEVICES - SMALLER THAN 768px  ~~~~~~~~~~~~~~~~~~*/
-
+/*@import "_chartist-settings.scss";
+@import "../../bower_components/chartist/dist/scss/chartist.scss";
+*/
+@import "_codepen_sample.css";

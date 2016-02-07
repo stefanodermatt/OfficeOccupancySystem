@@ -6,7 +6,8 @@
     angular
         .module('app', [
             'app.home',
-            'app.example'
+            'app.example',
+            'app.core',
         ]);
 
 })();

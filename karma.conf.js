@@ -1,4 +1,4 @@
-module.exports = function(config) {
+  module.exports = function(config) {
   'use strict';
 
   config.set({
@@ -21,6 +21,8 @@ module.exports = function(config) {
       'bower_components/angular-ui-router/release/angular-ui-router.js',
       'bower_components/angular-mocks/angular-mocks.js',
       'bower_components/angular-bootstrap/ui-bootstrap-tpls.js',
+      'bower_components/chartist/dist/chartist.min.js',
+      'bower_components/d3/d3.js',
       // endbower
       'app/modules/**/*.module.js',
       'app/modules/*.js',
