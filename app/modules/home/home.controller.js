@@ -11,95 +11,6 @@
         var vm = this;
         vm.items = ExampleService.getSomething();
 
-
-
-        /*
-        var data = {
-            // A labels array that can contain any sort of values
-            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
-            // Our series array that contains series objects or in this case series data arrays
-            series: [
-                [5, 2, 4, 2, 0]
-            ]
-        };
-
-        // Create a new line chart object where as first parameter we pass in a selector
-        // that is resolving to our chart container element. The Second parameter
-        // is the actual data object.
-        new Chartist.Line('.ct-chart', data);
-        */
-
-        /*
-        var data = {
-            lineChart : [
-                {
-                    date  : '2006-02-22',
-                    label : 'foo',
-                    value : 950
-                },
-                {
-                    date  : '2006-08-22',
-                    label : 'bar',
-                    value : 1000
-                },
-                {
-                    date  : '2007-01-11',
-                    label : 'baz',
-                    value : 700
-                },
-                {
-                    date  : '2008-10-01',
-                    label : 'boing',
-                    value : 534
-                },
-                {
-                    date  : '2009-02-24',
-                    label : 'loool',
-                    value : 1423
-                },
-                {
-                    date  : '2010-12-30',
-                    label : 'YEAH',
-                    value : 1222
-                },
-                {
-                    date  : '2011-05-15',
-                    label : 'Hurray',
-                    value : 948
-                },
-                {
-                    date  : '2012-04-02',
-                    label : 'WTF',
-                    value : 1938
-                },
-                {
-                    date  : '2013-08-19',
-                    label : 'OMG',
-                    value : 1245
-                },
-                {
-                    date  : '2013-11-11',
-                    label : 'ROFL',
-                    value : 888
-                }
-            ],
-            pieChart  : [
-                {
-                    color       : 'red',
-                    description : 'Ipsem lorem text goes here. And foo goes bar goes baz. That\'s up!!!',
-                    title       : 'flowers',
-                    value       : 0.62
-                },
-                {
-                    color       : 'blue',
-                    description : 'Another ipsem text goes here. And baz goes bar goes foo. Oh yeah, whazzz up?',
-                    title       : 'trains',
-                    value       : 0.38
-                }
-            ]
-        };
-*/
-
         function createDataArray(weeklyData)
         {
             var data = {
@@ -177,28 +88,21 @@
                         value       : 0.38
                     }
                 ]};
-
             return data;
         }
 
 
-        function fetchData(){
-            var weeklyData;
-            weeklyData = DataService.getWeeklyData(); /*.then(function(data){
-                weeklyData = data;
-                console.log(data);
-*/
-                console.log('weeklydata...');
-                console.log(weeklyData);
-                return createDataArray(weeklyData);
-/*
+        function fetchAndDisplayData(){
+            DataService.getWeeklyData().then(function(data){
+                //var data = getTestData();
+                drawPieChart(     'pieChart',     data.pieChart );
+                drawLineChart(    'lineChart',    data.lineChart );
             }, function(error){
-                weeklyData = {error : error };
-                return weeklyData;
-            })*/
+                console.log(error);
+            })
         }
 
-        var DURATION = 1500;
+        var DURATION = 2500;
         var DELAY    = 500;
 
         /**
@@ -211,15 +115,12 @@
             // parse helper functions on top
             var parse = d3.time.format( '%Y-%m-%d' ).parse;
             // data manipulation first
-            console.log('drawLineChart....');
-            console.log(data);
             data = data.map( function( datum ) {
                 datum.date = parse( datum.date );
 
                 return datum;
             } );
 
-            // TODO code duplication check how you can avoid that
             var containerEl = document.getElementById( elementId ),
                 width       = containerEl.clientWidth,
                 height      = width * 0.4,
@@ -276,7 +177,7 @@
             // Compute the minimum and maximum date, and the maximum price.
             x.domain( [ data[ 0 ].date, data[ data.length - 1 ].date ] );
             // hacky hacky hacky :(
-            y.domain( [ 0, d3.max( data, function( d ) { return d.value; } ) + 700 ] );
+            y.domain( [ 0, d3.max( data, function( d ) { return d.value; } ) + 50 ] );
 
             svg.append( 'g' )
                 .attr( 'class', 'lineChart--xAxisTicks' )
@@ -442,7 +343,6 @@
          * @param {Array}  data      data
          */
         function drawPieChart( elementId, data ) {
-            // TODO code duplication check how you can avoid that
             var containerEl = document.getElementById( elementId ),
                 width       = containerEl.clientWidth,
                 height      = width * 0.4,
@@ -593,15 +493,7 @@
 
         }
 
-        function start() {
-            var data = fetchData();
-            //var data = getTestData();
-            console.log(data);
-            drawPieChart(     'pieChart',     data.pieChart );
-            drawLineChart(    'lineChart',    data.lineChart );
-        }
-        // yeah, let's kick things off!!!
-        start();
+        fetchAndDisplayData();
     }
 
 

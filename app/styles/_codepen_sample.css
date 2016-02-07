@@ -1,4 +1,4 @@
-* {
+  * {
   -moz-box-sizing: border-box;
   box-sizing: border-box; }
 
@@ -149,10 +149,10 @@ body {
   text-align: right; }
 
 .pieChart__blue {
-  fill: #6bb7c7; }
+  fill: #636466; }
 
 .pieChart__red {
-  fill: #d79d91; }
+  fill: #0054a6; }
 
 /**
  * Helper classes
