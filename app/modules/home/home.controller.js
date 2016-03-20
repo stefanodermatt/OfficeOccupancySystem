@@ -10,6 +10,7 @@
     function HomeController(ExampleService, DataService) {
         var vm = this;
         vm.items = ExampleService.getSomething();
+        vm.currentOccupancy = "Currently, nobody is in the office";
 
         function createDataArray(weeklyData)
         {
@@ -95,6 +96,17 @@
         function fetchAndDisplayData(){
             DataService.getWeeklyData().then(function(data){
                 //var data = getTestData();
+                var peopleInTheOffice = data['pieChart'][0].count;
+
+                if(peopleInTheOffice == 0)
+                    vm.currentOccupancy = "Currently, nobody is in the office.";
+                else if(peopleInTheOffice == 1)
+                    vm.currentOccupancy = "Currently, 1 person is in the office.";
+                else
+                    vm.currentOccupancy = "Currently, " + peopleInTheOffice + " people are in the office."
+
+                console.log('currentOccupancy: ' + vm.currentOccupancy);
+
                 drawPieChart(     'pieChart',     data.pieChart );
                 drawLineChart(    'lineChart',    data.lineChart );
             }, function(error){

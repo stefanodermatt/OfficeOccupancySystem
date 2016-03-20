@@ -10,11 +10,15 @@
 
     function DataService($http) {
 
+        var fullOffice = 20;
+        var officeOccupancyUrl = 'https://api.thingspeak.com/channels/61942/fields/';
+        var latestEntry = '1.json?results=1';
+
         var service = {
             getWeeklyData: function getWeeklyData(){
-                return $http.get('https://api.thingspeak.com/channels/61942/fields/2.json?results=7').then(function(response) {
-                    //return response.data;
-                    return getTestData();
+                return $http.get(officeOccupancyUrl + latestEntry).then(function(response) {
+                    var data = convertRawData(response.data);
+                    return data;
                 });
             }
         };
@@ -23,7 +27,23 @@
 
         function convertRawData(thingSpeakData){
 
+            var data = getTestData();
 
+            var peopleInTheOffice = thingSpeakData.feeds['0'].field1;
+            data['pieChart'][0].count = peopleInTheOffice;
+
+            if(peopleInTheOffice < 0)
+                peopleInTheOffice = 0;
+            else if(peopleInTheOffice > fullOffice)
+                peopleInTheOffice = fullOffice;
+
+            var occupied = peopleInTheOffice/fullOffice;
+            var free = 1 - occupied;
+
+            data['pieChart'][0].value = occupied;
+            data['pieChart'][1].value = free;
+
+            return data;
         }
 
         function getTestData()
@@ -99,6 +119,16 @@
                         date  : '2016-02-14',
                         label : 'Sun @ 00:00',
                         value : 0
+                    },
+                    {
+                        date  : '2016-02-15',
+                        label : 'Sat @ 11:14',
+                        value : 29
+                    },
+                    {
+                        date  : '2016-02-16',
+                        label : 'Sun @ 00:00',
+                        value : 14
                     }
                 ],
                 pieChart: [
@@ -106,13 +136,15 @@
                         color       : 'red',
                         description : 'Occupied',
                         title       : 'occupied',
-                        value       : 0.48
+                        value       : 0.48,
+                        count       : 0
                     },
                     {
                         color       : 'blue',
                         description : 'free space',
                         title       : 'free',
-                        value       : 0.52
+                        value       : 0.52,
+                        count       : 0
                     }]};
             return data
         }

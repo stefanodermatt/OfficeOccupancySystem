@@ -13,7 +13,7 @@
                 url: '/',
                 templateUrl: 'modules/home/home.tpl.html',
                 controller: 'HomeController',
-                controllerAs: 'home',
+                controllerAs: 'vm',
                 data: {
                     requiresLogin: false
                 }
