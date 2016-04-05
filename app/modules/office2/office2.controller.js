@@ -2,41 +2,36 @@
     'use strict';
 
     angular
-        .module('app.home')
-        .controller('HomeController', HomeController);
+        .module('app.office2')
+        .controller('Office2Controller', Office2Controller);
 
-    HomeController.$inject = ['DataService'];
+    Office2Controller.$inject = ['DataService'];
 
-    function HomeController(DataService) {
+    function Office2Controller(DataService) {
         var vm = this;
         vm.currentOccupancy = 'Currently, nobody is in the office';
 
 
-        function fetchAndDisplayData(){
-            DataService.getPieData().then(function(data){
+        function fetchAndDisplayData() {
+            var color = 'green';
+            var data = DataService.getPieTestData(Math.floor(Math.random() * 20) + 1, color);
 
-                var peopleInTheOffice = data[0].count;
+            var peopleInTheOffice = data[0].count;
 
-                if(peopleInTheOffice <= 0)
-                    vm.currentOccupancy = 'Currently, nobody is in the Zurich office.';
-                else if(peopleInTheOffice === 1)
-                    vm.currentOccupancy = 'Currently, 1 person is in the Zurich office.';
-                else
-                    vm.currentOccupancy = 'Currently, ' + peopleInTheOffice + ' people are in the Zurich office.';
+            if (peopleInTheOffice <= 0)
+                vm.currentOccupancy = 'Currently, nobody is in the Baar office.';
+            else if (peopleInTheOffice === 1)
+                vm.currentOccupancy = 'Currently, 1 person is in the Baar office.';
+            else
+                vm.currentOccupancy = 'Currently, ' + peopleInTheOffice + ' people are in the Baar office.';
 
-                console.log('currentOccupancy: ' + vm.currentOccupancy);
+            console.log('currentOccupancy: ' + vm.currentOccupancy);
 
-                drawPieChart(     'pieChart',     data );
-                            }, function(error){
-                console.log(error);
-            });
-
-
+            drawPieChart('pieChart', data);
 
             DataService.getLineChartData().then(function(lineChartData){
                 drawLineChart(    'lineChart',    lineChartData );
             });
-
         }
 
         var DURATION = 2500;
@@ -62,7 +57,7 @@
                 width       = containerEl.clientWidth,
                 height      = width * 0.4,
                 margin      = {
-                    top    : 10,
+                    top    : 30,
                     right  : 10,
                     left   : 10
                 },
@@ -117,23 +112,23 @@
             y.domain( [ 0, d3.max( data, function( d ) { return d.value; } ) + 10 ] );
 
             svg.append( 'g' )
-                .attr( 'class', 'lineChart--xAxisTicks' )
+                .attr( 'class', 'lineChart2--xAxisTicks' )
                 .attr( 'transform', 'translate(' + detailWidth / 2 + ',' + height + ')' )
                 .call( xAxisTicks );
 
             svg.append( 'g' )
-                .attr( 'class', 'lineChart--xAxis' )
+                .attr( 'class', 'lineChart2--xAxis' )
                 .attr( 'transform', 'translate(' + detailWidth / 2 + ',' + ( height + 7 ) + ')' )
                 .call( xAxis );
 
             svg.append( 'g' )
-                .attr( 'class', 'lineChart--yAxisTicks' )
+                .attr( 'class', 'lineChart2--yAxisTicks' )
                 .call( yAxisTicks );
 
             // Add the line path.
             svg.append( 'path' )
                 .datum( startData )
-                .attr( 'class', 'lineChart--areaLine' )
+                .attr( 'class', 'lineChart2--areaLine' )
                 .attr( 'd', line )
                 .transition()
                 .duration( DURATION )
@@ -147,7 +142,7 @@
             // Add the area path.
             svg.append( 'path' )
                 .datum( startData )
-                .attr( 'class', 'lineChart--area' )
+                .attr( 'class', 'lineChart2--area' )
                 .attr( 'd', area )
                 .transition()
                 .duration( DURATION )
@@ -157,7 +152,7 @@
             function drawCircle( datum, index ) {
                 circleContainer.datum( datum )
                     .append( 'circle' )
-                    .attr( 'class', 'lineChart--circle' )
+                    .attr( 'class', 'lineChart2--circle' )
                     .attr( 'r', 0 )
                     .attr(
                     'cx',
@@ -175,7 +170,7 @@
                         d3.select( this )
                             .attr(
                             'class',
-                            'lineChart--circle lineChart--circle__highlighted'
+                            'lineChart2--circle lineChart2--circle__highlighted'
                         )
                             .attr( 'r', 7 );
 
@@ -187,7 +182,7 @@
                         d3.select( this )
                             .attr(
                             'class',
-                            'lineChart--circle'
+                            'lineChart2--circle'
                         )
                             .attr( 'r', 6 );
 
@@ -218,13 +213,13 @@
             }
 
             function hideCircleDetails() {
-                circleContainer.selectAll( '.lineChart--bubble' )
+                circleContainer.selectAll( '.lineChart2--bubble' )
                     .remove();
             }
 
             function showCircleDetail( data ) {
                 var details = circleContainer.append( 'g' )
-                    .attr( 'class', 'lineChart--bubble' )
+                    .attr( 'class', 'lineChart2--bubble' )
                     .attr(
                     'transform',
                     function() {
@@ -245,17 +240,17 @@
                     .attr( 'height', detailHeight );
 
                 var text = details.append( 'text' )
-                    .attr( 'class', 'lineChart--bubble--text' );
+                    .attr( 'class', 'lineChart2--bubble--text' );
 
                 text.append( 'tspan' )
-                    .attr( 'class', 'lineChart--bubble--label' )
+                    .attr( 'class', 'lineChart2--bubble--label' )
                     .attr( 'x', detailWidth / 2 )
                     .attr( 'y', detailHeight / 3 )
                     .attr( 'text-anchor', 'middle' )
                     .text( data.label );
 
                 text.append( 'tspan' )
-                    .attr( 'class', 'lineChart--bubble--value' )
+                    .attr( 'class', 'lineChart2--bubble--value' )
                     .attr( 'x', detailWidth / 2 )
                     .attr( 'y', detailHeight / 4 * 3 )
                     .attr( 'text-anchor', 'middle' )
@@ -288,7 +283,7 @@
                 svg         = container.select( 'svg' )
                     .attr( 'width', width )
                     .attr( 'height', height );
-           var pie = svg.append( 'g' )
+            var pie = svg.append( 'g' )
                 .attr(
                 'transform',
                 'translate(' + width / 2 + ',' + height / 2 + ')'
@@ -363,12 +358,12 @@
                 var anchor,
                     description,
 
-                infoContainer = detailedInfo.append( 'g' )
-                    .attr( 'width', width )
-                    .attr(
-                    'transform',
-                    'translate(' + ( width / 2) + ',' + ( height / 2 ) + ')'
-                );
+                    infoContainer = detailedInfo.append( 'g' )
+                        .attr( 'width', width )
+                        .attr(
+                        'transform',
+                        'translate(' + ( width / 2) + ',' + ( height / 2 ) + ')'
+                    );
                 anchor   = 'middle';
 
                 infoContainer.data( [ data.value * 100 ] )

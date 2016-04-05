@@ -5,32 +5,88 @@
         .module('app.core')
         .factory('DataService', DataService);
 
-    DataService.$inject = ['$http'];
+    DataService.$inject = ['$http', '$q'];
     /* @ngInject */
 
-    function DataService($http) {
+    function DataService($http, $q) {
 
         var fullOffice = 20;
+        var numberOfHistoryDays = 7;
         var officeOccupancyUrl = 'https://api.thingspeak.com/channels/61942/fields/';
+        var officeOccupancyHistoryUrl = 'https://api.thingspeak.com/channels/102828/fields/';
         var latestEntry = '1.json?results=1';
+        var historyEntry = '.json?results=1';
 
         var service = {
-            getWeeklyData: function getWeeklyData(){
-                return $http.get(officeOccupancyUrl + latestEntry).then(function(response) {
-                    var data = convertRawData(response.data);
-                    return data;
-                });
+            getPieData: function getPieData(){
+                    return getPieChartArray();
+            },
+            getLineChartData: function getLineChartData(){
+                return getLineChartArray();
+            },
+            getPieTestData: function getPieTestData(numberOfPeople, color){
+                return getPieTestDataArray(numberOfPeople, color);
             }
+
         };
 
         return service;
 
-        function convertRawData(thingSpeakData){
+        function getPieChartArray(){
 
-            var data = getTestData();
+            return $http.get(officeOccupancyUrl + latestEntry).then(function(response) {
 
-            var peopleInTheOffice = thingSpeakData.feeds['0'].field1;
-            data['pieChart'][0].count = peopleInTheOffice;
+                var pieChart = [
+                    {
+                        color       : 'blue',
+                        description : 'Occupied',
+                        title       : 'occupied',
+                        value       : 0.48,
+                        count       : 0
+                    },
+                    {
+                        color       : 'grey',
+                        description : 'free space',
+                        title       : 'free',
+                        value       : 0.52,
+                        count       : 0
+                    }];
+                var peopleInTheOffice = response.data.feeds['0'].field1;
+                pieChart[0].count = peopleInTheOffice;
+
+                if(peopleInTheOffice < 0)
+                    peopleInTheOffice = 0;
+                else if(peopleInTheOffice > fullOffice)
+                    peopleInTheOffice = fullOffice;
+
+                var occupied = peopleInTheOffice/fullOffice;
+                var free = 1 - occupied;
+
+                pieChart[0].value = occupied;
+                pieChart[1].value = free;
+
+                return pieChart;
+            });
+        }
+
+        function getPieTestDataArray(numberOfPeople, color){
+            var pieChart = [
+                {
+                    color       : color,
+                    description : 'Occupied',
+                    title       : 'occupied',
+                    value       : 0.48,
+                    count       : 0
+                },
+                {
+                    color       : 'grey',
+                    description : 'free space',
+                    title       : 'free',
+                    value       : 0.52,
+                    count       : 0
+                }];
+            var peopleInTheOffice = numberOfPeople;
+            pieChart[0].count = peopleInTheOffice;
 
             if(peopleInTheOffice < 0)
                 peopleInTheOffice = 0;
@@ -40,114 +96,94 @@
             var occupied = peopleInTheOffice/fullOffice;
             var free = 1 - occupied;
 
-            data['pieChart'][0].value = occupied;
-            data['pieChart'][1].value = free;
+            pieChart[0].value = occupied;
+            pieChart[1].value = free;
 
-            return data;
+            return pieChart;
         }
 
-        function getTestData()
-        {
-            var data = {
-                lineChart : [
-                    {
-                        date  : '2016-02-01',
-                        label : 'Mon @ 09:00',
-                        value : 74
-                    },
-                    {
-                        date  : '2016-02-02',
-                        label : 'Tue @ 11:00',
-                        value : 54
-                    },
-                    {
-                        date  : '2016-02-03',
-                        label : 'Wed @ 18:00',
-                        value : 64
-                    },
-                    {
-                        date  : '2016-02-04',
-                        label : 'Thu @ 15:00',
-                        value : 34
-                    },
-                    {
-                        date  : '2016-02-05',
-                        label : 'Fri @ 13:24',
-                        value : 56
-                    },
-                    {
-                        date  : '2016-02-06',
-                        label : 'Sat @ 09:21',
-                        value : 3
-                    },
-                    {
-                        date  : '2016-02-07',
-                        label : 'Sun @ 00:00',
-                        value : 0
-                    },
-                    {
-                        date  : '2016-02-08',
-                        label : 'Mon @ 10:39',
-                        value : 48
-                    },
-                    {
-                        date  : '2016-02-09',
-                        label : 'Tue @ 09:37',
-                        value : 32
-                    },
-                    {
-                        date  : '2016-02-10',
-                        label : 'Wed @ 12:56',
-                        value : 54
-                    },
-                    {
-                        date  : '2016-02-11',
-                        label : 'Thu @ 15:34',
-                        value : 23
-                    },
-                    {
-                        date  : '2016-02-12',
-                        label : 'Fri @ 11:54',
-                        value : 45
-                    },
-                    {
-                        date  : '2016-02-13',
-                        label : 'Sat @ 11:14',
-                        value : 10
-                    },
-                    {
-                        date  : '2016-02-14',
-                        label : 'Sun @ 00:00',
-                        value : 0
-                    },
-                    {
-                        date  : '2016-02-15',
-                        label : 'Sat @ 11:14',
-                        value : 29
-                    },
-                    {
-                        date  : '2016-02-16',
-                        label : 'Sun @ 00:00',
-                        value : 14
-                    }
-                ],
-                pieChart: [
-                    {
-                        color       : 'red',
-                        description : 'Occupied',
-                        title       : 'occupied',
-                        value       : 0.48,
-                        count       : 0
-                    },
-                    {
-                        color       : 'blue',
-                        description : 'free space',
-                        title       : 'free',
-                        value       : 0.52,
-                        count       : 0
-                    }]};
-            return data
+        function getLineChartArray(){
+            return getHistoryEvents();
         }
+
+        function getHistoryEvents(){
+
+            var data = [
+                {
+                    date  : '2016-02-01',
+                    label : 'Mon @ 09:00',
+                    value : 0
+                },
+                {
+                    date  : '2016-02-02',
+                    label : 'Tue @ 11:00',
+                    value : 0
+                },
+                {
+                    date  : '2016-02-03',
+                    label : 'Wed @ 18:00',
+                    value : 0
+                },
+                {
+                    date  : '2016-02-04',
+                    label : 'Thu @ 15:00',
+                    value : 0
+                },
+                {
+                    date  : '2016-02-05',
+                    label : 'Fri @ 13:24',
+                    value : 0
+                },
+                {
+                    date  : '2016-02-06',
+                    label : 'Sat @ 09:21',
+                    value : 3
+                },
+                {
+                    date  : '2016-02-07',
+                    label : 'Sun @ 00:00',
+                    value : 0
+                }
+            ];
+
+            var promises = getHistoryUrlFunctionArray();
+
+            return $q.all(promises).then(function(/*values*/){
+                var i;
+                for(i=0;i < numberOfHistoryDays;i++){
+                    //if(values[i].data.feeds['0'].field1 === null){
+                        data[i].value = Math.floor(Math.random()*20)+1;
+                    /*}else{
+                        data[i].value = values[i].data.feeds['0'].field1;
+                    }*/
+                }
+                return data;
+            });
+        }
+
+        function getHistoryUrlFunctionArray(){
+            var urls = [];
+            var index;
+            var urlIndex;
+            var d = new Date();
+            var n = d.getDay() + 2; // 0 = Sunday, 1 = Monday, ...
+
+            for(index=0; index < numberOfHistoryDays;index++){
+                urlIndex = ((n + index) % 7) + 1;
+
+                urls.push(createFunction(urlIndex));
+            }
+
+            return urls;
+        }
+
+        function createFunction(urlIndex){
+            return (function(){
+                var url = officeOccupancyHistoryUrl + urlIndex + historyEntry;
+                return $http.get(url);
+            }());
+        }
+
     }
 })();
 

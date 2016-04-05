@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-        .module('app.home', [
+        .module('app.office1', [
             'ui.router',
             'app.core'
         ]);

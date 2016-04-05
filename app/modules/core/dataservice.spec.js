@@ -19,7 +19,7 @@ describe('DataService test: ', function () {
     describe('Mocked HTTP Requests', function() {
 
         var $httpBackend;
-        var testUrl = 'https://api.thingspeak.com/channels/61942/fields/2.json?results=7';
+        //var testUrl = 'https://api.thingspeak.com/channels/61942/fields/2.json?results=7';
 
         beforeEach(inject(function($injector) {
             // Set up the mock http service responses
@@ -47,7 +47,7 @@ describe('DataService test: ', function () {
         });
 
 
-        function getDummyData(){
+        /*function getDummyData(){
             var data = {
                 channel: {
                         id: 61942,
@@ -107,7 +107,7 @@ describe('DataService test: ', function () {
             };
 
             return data;
-        }
+        }*/
     });
 
 

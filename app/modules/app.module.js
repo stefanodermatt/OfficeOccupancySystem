@@ -6,7 +6,8 @@
     angular
         .module('app', [
             'app.home',
-            'app.example',
+            'app.office1',
+            'app.office2',
             'app.core',
         ]);
 
