@@ -31,10 +31,11 @@
                 console.log(error);
             });
 
-
+            var color = 'blue';
+            var strokeColor = 'blueStroke';
 
             DataService.getLineChartData().then(function(lineChartData){
-                drawLineChart(    'lineChart',    lineChartData );
+                drawLineChart(    'lineChart',    lineChartData, color, strokeColor  );
             });
 
         }
@@ -48,7 +49,7 @@
          * @param {String} elementId elementId
          * @param {Array}  data      data
          */
-        function drawLineChart( elementId, data ) {
+        function drawLineChart( elementId, data, color , strokeColor) {
             // parse helper functions on top
             var parse = d3.time.format( '%Y-%m-%d' ).parse;
             // data manipulation first
@@ -62,7 +63,7 @@
                 width       = containerEl.clientWidth,
                 height      = width * 0.4,
                 margin      = {
-                    top    : 10,
+                    top    : 30,
                     right  : 10,
                     left   : 10
                 },
@@ -133,14 +134,14 @@
             // Add the line path.
             svg.append( 'path' )
                 .datum( startData )
-                .attr( 'class', 'lineChart--areaLine' )
+                .attr( 'class', 'lineChart--areaLine' + ' ' + strokeColor)
                 .attr( 'd', line )
                 .transition()
                 .duration( DURATION )
                 .delay( DURATION / 2 )
                 .attrTween( 'd', tween( data, line ) )
                 .each( 'end', function() {
-                    drawCircles( data );
+                    drawCircles( data, color );
                 } );
 
 
@@ -154,10 +155,10 @@
                 .attrTween( 'd', tween( data, area ) );
 
             // Helper functions!!!
-            function drawCircle( datum, index ) {
+            function drawCircle( datum, index, color ) {
                 circleContainer.datum( datum )
                     .append( 'circle' )
-                    .attr( 'class', 'lineChart--circle' )
+                    .attr( 'class', 'lineChart--circle' + ' ' + color )
                     .attr( 'r', 0 )
                     .attr(
                     'cx',
@@ -187,7 +188,7 @@
                         d3.select( this )
                             .attr(
                             'class',
-                            'lineChart--circle'
+                            'lineChart--circle' + ' ' + color
                         )
                             .attr( 'r', 6 );
 
@@ -209,11 +210,11 @@
                     .attr( 'r', 6 );
             }
 
-            function drawCircles( data ) {
+            function drawCircles( data, color ) {
                 circleContainer = svg.append( 'g' );
 
                 data.forEach( function( datum, index ) {
-                    drawCircle( datum, index );
+                    drawCircle( datum, index, color);
                 } );
             }
 
@@ -224,7 +225,7 @@
 
             function showCircleDetail( data ) {
                 var details = circleContainer.append( 'g' )
-                    .attr( 'class', 'lineChart--bubble' )
+                    .attr( 'class', 'lineChart--bubble' + ' ' + strokeColor )
                     .attr(
                     'transform',
                     function() {
@@ -245,17 +246,17 @@
                     .attr( 'height', detailHeight );
 
                 var text = details.append( 'text' )
-                    .attr( 'class', 'lineChart--bubble--text' );
+                    .attr( 'class', 'lineChart--bubble--text' + ' ' + strokeColor );
 
                 text.append( 'tspan' )
-                    .attr( 'class', 'lineChart--bubble--label' )
+                    .attr( 'class', 'lineChart--bubble--label' + ' ' + strokeColor)
                     .attr( 'x', detailWidth / 2 )
                     .attr( 'y', detailHeight / 3 )
                     .attr( 'text-anchor', 'middle' )
                     .text( data.label );
 
                 text.append( 'tspan' )
-                    .attr( 'class', 'lineChart--bubble--value' )
+                    .attr( 'class', 'lineChart--bubble--value' + ' ' + strokeColor)
                     .attr( 'x', detailWidth / 2 )
                     .attr( 'y', detailHeight / 4 * 3 )
                     .attr( 'text-anchor', 'middle' )
@@ -288,7 +289,7 @@
                 svg         = container.select( 'svg' )
                     .attr( 'width', width )
                     .attr( 'height', height );
-           var pie = svg.append( 'g' )
+            var pie = svg.append( 'g' )
                 .attr(
                 'transform',
                 'translate(' + width / 2 + ',' + height / 2 + ')'
@@ -310,7 +311,7 @@
                 .enter()
                 .append( 'path' )
                 .attr( 'class', function( d ) {
-                    return 'pieChart__' + d.data.color;
+                    return d.data.color;
                 } )
                 .attr( 'filter', 'url(#pieChartInsetShadow)' )
                 .attr( 'd', arc )
@@ -363,12 +364,12 @@
                 var anchor,
                     description,
 
-                infoContainer = detailedInfo.append( 'g' )
-                    .attr( 'width', width )
-                    .attr(
-                    'transform',
-                    'translate(' + ( width / 2) + ',' + ( height / 2 ) + ')'
-                );
+                    infoContainer = detailedInfo.append( 'g' )
+                        .attr( 'width', width )
+                        .attr(
+                        'transform',
+                        'translate(' + ( width / 2) + ',' + ( height / 2 ) + ')'
+                    );
                 anchor   = 'middle';
 
                 infoContainer.data( [ data.value * 100 ] )
